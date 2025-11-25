@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryReview Studio - UI Sketch</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation to switch between views -->
+    <nav class="view-nav">
+        <button class="view-btn active" data-view="dashboard">Dashboard</button>
+        <button class="view-btn" data-view="seed">SEED</button>
+        <button class="view-btn" data-view="shape">SHAPE</button>
+        <button class="view-btn" data-view="draft">DRAFT</button>
+        <button class="view-btn" data-view="test">TEST</button>
+        <button class="view-btn" data-view="settings">Settings</button>
+    </nav>
+
+    <!-- 1. Stories Dashboard -->
+    <div id="dashboard" class="view active">
+        <header class="app-header">
+            <h1>StoryReview Studio</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary">New Story</button>
+                <button class="btn">Settings</button>
+            </div>
+        </header>
+        
+        <div class="filters-bar">
+            <label>
+                Status: 
+                <select>
+                    <option>All</option>
+                    <option>DRAFT</option>
+                    <option>READY TO TEST</option>
+                    <option>SHAPE</option>
+                    <option>SEED</option>
+                </select>
+            </label>
+            <label>
+                Sorted by: 
+                <select>
+                    <option>Last Edited</option>
+                    <option>Title</option>
+                    <option>Status</option>
+                </select>
+            </label>
+            <label>
+                Search: 
+                <input type="text" placeholder="Search stories...">
+            </label>
+        </div>
+
+        <table class="stories-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Last Review</th>
+                    <th>Last Edited</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="story-row" data-status="draft">
+                    <td>101</td>
+                    <td>The Last Shift at River Mill</td>
+                    <td><span class="status-badge draft">DRAFT</span></td>
+                    <td>7.3 / 10</td>
+                    <td>2025-11-20</td>
+                </tr>
+                <tr class="story-row" data-status="ready">
+                    <td>102</td>
+                    <td>After the Flood</td>
+                    <td><span class="status-badge ready">READY TO TEST</span></td>
+                    <td>-</td>
+                    <td>2025-11-18</td>
+                </tr>
+                <tr class="story-row" data-status="shape">
+                    <td>103</td>
+                    <td>A Town of Two Mayors</td>
+                    <td><span class="status-badge shape">SHAPE</span></td>
+                    <td>5.9 / 10</td>
+                    <td>2025-11-10</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <footer class="keyboard-hints">
+            <span>[Enter] Open</span>
+            <span>[D] Duplicate</span>
+            <span>[Del] Archive</span>
+            <span>[F] Filter</span>
+            <span>[/] Search</span>
+        </footer>
+    </div>
+
+    <!-- 2. SEED – Idea / Intent Workspace -->
+    <div id="seed" class="view">
+        <header class="story-header">
+            <h2>Story: The Last Shift at River Mill</h2>
+            <div class="mode-tabs">
+                <span class="mode-tab active">SEED</span>
+                <span class="mode-tab">SHAPE</span>
+                <span class="mode-tab">DRAFT</span>
+                <span class="mode-tab">TEST</span>
+            </div>
+        </header>
+
+        <div class="seed-layout">
+            <!-- Left: Story Intent Card -->
+            <div class="panel story-intent">
+                <h3>Story Intent Card</h3>
+                <div class="form-group">
+                    <label>Working Title:</label>
+                    <input type="text" value="The Last Shift at River Mill">
+                </div>
+                <div class="form-group">
+                    <label>Target Length:</label>
+                    <select>
+                        <option>2,000 words</option>
+                        <option selected>4,000 words</option>
+                        <option>6,000 words</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Form:</label>
+                    <select>
+                        <option selected>Reported Profile</option>
+                        <option>Essay</option>
+                        <option>Investigative</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tone:</label>
+                    <input type="text" value="Reported + Reflective">
+                </div>
+                <div class="form-group">
+                    <label>Sensitivities:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" checked> Job loss / poverty</label>
+                        <label><input type="checkbox"> Minors</label>
+                        <label><input type="checkbox"> Trauma / violence</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Initial Questions / Goals:</label>
+                    <ul class="goals-list">
+                        <li>What actually happened 2019-2020?</li>
+                        <li>Who are central humans?</li>
+                        <li>What is core tension?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Center: Idea Box -->
+            <div class="panel idea-box">
+                <h3>Idea Box</h3>
+                <textarea class="idea-textarea" placeholder="Free-write your story idea here...">"This story follows Maria, a night-shift worker, through the closure of River Mill in 2019, and traces how the town coped afterward..."
+
+Maria represents the generation of workers who built their lives around stable manufacturing jobs. When the plant closed, it wasn't just jobs that vanished—it was a whole way of life.</textarea>
+                <p class="hint">Author can free-write; LLM questions appear on the right.</p>
+            </div>
+
+            <!-- Right: Guided Questions -->
+            <div class="panel guided-questions">
+                <h3>Guided Questions</h3>
+                <div class="question-card">
+                    <p class="question">Q1: Which parts do you know from first-hand experience?</p>
+                    <textarea placeholder="Your answer..."></textarea>
+                </div>
+                <div class="question-card collapsed">
+                    <p class="question">Q2: What sources will you need to verify key events?</p>
+                    <textarea placeholder="Your answer..."></textarea>
+                </div>
+                <div class="question-card collapsed">
+                    <p class="question">Q3: Who are the key people you need to interview?</p>
+                    <textarea placeholder="Your answer..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <footer class="keyboard-hints">
+            <span>[Tab] Switch panes</span>
+            <span>[Ctrl+S] Save Intent</span>
+            <span>[N] Move to SHAPE</span>
+        </footer>
+    </div>
+
+    <!-- 3. SHAPE – Evidence Bundles & Structure -->
+    <div id="shape" class="view">
+        <header class="story-header">
+            <h2>Story: The Last Shift at River Mill</h2>
+            <div class="mode-tabs">
+                <span class="mode-tab">SEED</span>
+                <span class="mode-tab active">SHAPE</span>
+                <span class="mode-tab">DRAFT</span>
+                <span class="mode-tab">TEST</span>
+            </div>
+        </header>
+
+        <div class="shape-layout">
+            <!-- Left: Evidence Bundles -->
+            <div class="panel bundles-panel">
+                <h3>Evidence Bundles</h3>
+                <ul class="bundle-list">
+                    <li class="bundle-item selected">
+                        <span class="bundle-tag evt">EVT</span>
+                        #1 Plant Closure 2019
+                    </li>
+                    <li class="bundle-item">
+                        <span class="bundle-tag id">ID</span>
+                        #2 Maria's Work History
+                    </li>
+                    <li class="bundle-item">
+                        <span class="bundle-tag evt">EVT</span>
+                        #3 Town Politics
+                    </li>
+                    <li class="bundle-item">
+                        <span class="bundle-tag seq">SEQ</span>
+                        #4 Aftermath
+                    </li>
+                    <li class="bundle-item">
+                        <span class="bundle-tag attr">ATTR</span>
+                        #5 Local Rumors
+                    </li>
+                </ul>
+                <button class="btn btn-add">+ New Bundle</button>
+                
+                <div class="bundle-filters">
+                    <h4>Bundle Filters:</h4>
+                    <label>Type: <select><option>All</option></select></label>
+                    <label>State: <select><option>All</option></select></label>
+                </div>
+            </div>
+
+            <!-- Center: Structure Board -->
+            <div class="panel structure-board">
+                <h3>Structure Board</h3>
+                <div class="template-select">
+                    Template: <select><option>Event + Backstory</option></select>
+                </div>
+                <div class="scene-map">
+                    <div class="scene-card">
+                        <h4>Scene 1: Cold Open (Setup)</h4>
+                        <span class="word-target">[800–1000 words]</span>
+                        <div class="scene-bundles">Bundles: #1, #2</div>
+                    </div>
+                    <div class="scene-card">
+                        <h4>Scene 2: Background (Context)</h4>
+                        <span class="word-target">[600–800 words]</span>
+                        <div class="scene-bundles">Bundles: #1, #3</div>
+                    </div>
+                    <div class="scene-card">
+                        <h4>Scene 3: Confrontation (Turn)</h4>
+                        <span class="word-target">[700–900 words]</span>
+                        <div class="scene-bundles">Bundles: #1, #4, #5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Bundle Detail -->
+            <div class="panel bundle-detail">
+                <h3>Bundle: #1 Plant Closure 2019</h3>
+                
+                <div class="reliability-types">
+                    <label><input type="checkbox" checked> Event</label>
+                    <label><input type="checkbox"> Identity</label>
+                    <label><input type="checkbox" checked> Quantity</label>
+                    <label><input type="checkbox"> Attribution</label>
+                    <label><input type="checkbox"> Sequence</label>
+                </div>
+
+                <div class="reliability-state">
+                    <label>Reliability State:</label>
+                    <select>
+                        <option selected>Sourced</option>
+                        <option>Verified</option>
+                        <option>Contested</option>
+                        <option>Unknown</option>
+                    </select>
+                    <span class="author-actions">
+                        <button class="btn btn-small">Verified</button>
+                        <button class="btn btn-small">Contested</button>
+                        <button class="btn btn-small">Unknown</button>
+                    </span>
+                </div>
+
+                <div class="sources-section">
+                    <h4>Sources (3):</h4>
+                    <ul class="source-list">
+                        <li><span class="source-tag web">Web</span> Local news, 2019-03-14 – "River Mill to close in March"</li>
+                        <li><span class="source-tag doc">Doc</span> Company report 2019 Q1 – Layoff count</li>
+                        <li><span class="source-tag interview">Interview</span> Maria – "We got notice in February"</li>
+                    </ul>
+                </div>
+
+                <div class="extracts-section">
+                    <h4>Key Extracts:</h4>
+                    <ul class="extract-list">
+                        <li>"The River Mill plant closed in March 2019, laying off around 300 workers."</li>
+                        <li>"Management announced the closure publicly in February 2019."</li>
+                    </ul>
+                </div>
+
+                <div class="narrative-notes">
+                    <h4>Narrative Notes (author):</h4>
+                    <textarea>Maria remembers the last night shift vividly; use this as opening scene.</textarea>
+                </div>
+            </div>
+        </div>
+
+        <footer class="keyboard-hints">
+            <span>[B] New bundle</span>
+            <span>[T] Change template</span>
+            <span>[S] Send to DRAFT</span>
+        </footer>
+    </div>
+
+    <!-- 4. DRAFT – Editor with Structural & Fact Feedback -->
+    <div id="draft" class="view">
+        <header class="story-header">
+            <h2>Story: The Last Shift at River Mill</h2>
+            <div class="mode-tabs">
+                <span class="mode-tab">SEED</span>
+                <span class="mode-tab">SHAPE</span>
+                <span class="mode-tab active">DRAFT</span>
+                <span class="mode-tab">TEST</span>
+            </div>
+        </header>
+
+        <div class="draft-layout">
+            <!-- Left: Scene List -->
+            <div class="panel scene-list">
+                <h3>Scenes</h3>
+                <ul class="scenes">
+                    <li class="scene-item completed">
+                        <span class="scene-status">✓</span>
+                        1. Cold Open (Setup)
+                        <span class="word-count">920 / 900</span>
+                    </li>
+                    <li class="scene-item active">
+                        <span class="scene-status">•</span>
+                        2. Background (Context)
+                        <span class="word-count">350 / 700</span>
+                    </li>
+                    <li class="scene-item">
+                        <span class="scene-status">○</span>
+                        3. Confrontation (Turn)
+                        <span class="word-count">0 / 800</span>
+                    </li>
+                    <li class="scene-item">
+                        <span class="scene-status">○</span>
+                        4. Aftermath (Fallout)
+                        <span class="word-count">0 / 600</span>
+                    </li>
+                    <li class="scene-item">
+                        <span class="scene-status">○</span>
+                        5. Reflection (Meaning)
+                        <span class="word-count">0 / 500</span>
+                    </li>
+                </ul>
+                <button class="btn btn-add">+ Add Scene</button>
+            </div>
+
+            <!-- Center: Manuscript Editor -->
+            <div class="panel manuscript-editor">
+                <div class="scene-title">Scene 1: Cold Open</div>
+                <div class="editor-content" contenteditable="true">
+                    <p>Maria stands in the fluorescent hush of the packing line, the clock above the exit ticking toward 11:58 p.m.</p>
+                    
+                    <p>The machines have been silent for an hour now. Everyone knows what tomorrow brings, but tonight they pretend not to.</p>
+                    
+                    <p><span class="fact-grounded" title="Grounded fact: verified by sources" aria-label="Grounded fact">"Three hundred people would be out of work by morning,"</span> the memo said. Maria had read it twice, the paper trembling slightly in her hands.</p>
+                    
+                    <p>She had worked at River Mill for seventeen years. First as a line worker, then as a shift supervisor. The plant was where she'd met her husband, raised her kids on the health insurance, planned her retirement.</p>
+                    
+                    <p><span class="fact-weak" title="Weakly sourced: needs verification" aria-label="Weakly sourced">The town never forgave the company for what happened next.</span></p>
+                </div>
+                <div class="editor-legend" role="legend" aria-label="Evidence status legend">
+                    <span class="legend-item"><span class="fact-grounded" aria-hidden="true">■</span> Grounded facts</span>
+                    <span class="legend-item"><span class="fact-weak" aria-hidden="true">■</span> Weakly sourced</span>
+                    <span class="legend-item"><span class="fact-none" aria-hidden="true">■</span> No evidence</span>
+                </div>
+            </div>
+
+            <!-- Right: Warnings/Suggestions + Context -->
+            <div class="panel feedback-panel">
+                <div class="context-pane">
+                    <h4>Evidence used in this scene:</h4>
+                    <ul class="evidence-used">
+                        <li>
+                            <strong>Bundle #1 Plant Closure 2019</strong>
+                            <ul>
+                                <li>Event: closure in March 2019</li>
+                                <li>Quantity: 300 workers (Sourced)</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Bundle #2 Maria's Work History</strong>
+                            <ul>
+                                <li>Identity: Maria as night-shift</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="warnings-pane">
+                    <h4>Warnings / Suggestions</h4>
+                    <div class="warning-item">
+                        <span class="warning-icon">!</span>
+                        <div class="warning-content">
+                            <strong>Sentence 3: "Three hundred people…"</strong>
+                            <p>Only one source; mark as "about" or attribute to memo.</p>
+                        </div>
+                    </div>
+                    <div class="warning-item">
+                        <span class="warning-icon">!</span>
+                        <div class="warning-content">
+                            <strong>Paragraph 2: "The town never forgave…"</strong>
+                            <p>No ledger evidence; consider as interpretation, not fact.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="keyboard-hints">
+            <span>[F2] Toggle evidence overlay</span>
+            <span>[Ctrl+E] Open bundle</span>
+            <span>[Alt+R] Soft rewrite paragraph</span>
+        </footer>
+    </div>
+
+    <!-- 5. TEST – Review / Scorecard Page -->
+    <div id="test" class="view">
+        <header class="story-header">
+            <h2>Story: The Last Shift at River Mill</h2>
+            <div class="mode-tabs">
+                <span class="mode-tab">SEED</span>
+                <span class="mode-tab">SHAPE</span>
+                <span class="mode-tab">DRAFT</span>
+                <span class="mode-tab active">TEST</span>
+            </div>
+        </header>
+
+        <div class="test-topbar">
+            <button class="btn btn-primary">Run Full Review</button>
+            <select>
+                <option>View Previous Reports</option>
+                <option>Report - Nov 20, 2025</option>
+                <option>Report - Nov 18, 2025</option>
+            </select>
+        </div>
+
+        <div class="test-layout">
+            <!-- Left: Review Summary -->
+            <div class="panel review-summary">
+                <h3>Review Summary</h3>
+                <div class="score-item">
+                    <span class="score-label">Overall Reliability:</span>
+                    <span class="score-value">7.4 / 10</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Structural Coherence:</span>
+                    <span class="score-value">8.1 / 10</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Handling Uncertainty:</span>
+                    <span class="score-value">6.5 / 10</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Ethics & Attribution:</span>
+                    <span class="score-value">7.0 / 10</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Thematic Depth:</span>
+                    <span class="score-value muted">(not scored)</span>
+                </div>
+            </div>
+
+            <!-- Right: Detail / Navigation -->
+            <div class="panel review-detail">
+                <h3>Sections</h3>
+                <ul class="section-nav">
+                    <li class="section-item active">Factual Grounding</li>
+                    <li class="section-item">Structure & Flow</li>
+                    <li class="section-item">Voice & Framing</li>
+                    <li class="section-item">Ethics / Harm</li>
+                </ul>
+
+                <div class="section-content">
+                    <h4>Factual Grounding</h4>
+                    
+                    <div class="highlights">
+                        <h5>Highlights:</h5>
+                        <ul>
+                            <li>Most key events (closure date, layoff size) are correctly grounded in Bundles #1, #2.</li>
+                            <li>Some strong statements about "the town" lack clear sources.</li>
+                        </ul>
+                    </div>
+
+                    <div class="high-impact-issues">
+                        <h5>High-impact issues (fix first):</h5>
+                        <ol class="issue-list">
+                            <li class="issue-item">
+                                <strong>Para 7: "Everyone knew the company had been lying for years."</strong>
+                                <p>No supporting evidence in ledger. Consider rephrasing as attributed opinion or limiting scope.</p>
+                            </li>
+                            <li class="issue-item">
+                                <strong>Para 11: "Unemployment doubled within a month."</strong>
+                                <p>Quantity claim; ledger only supports gradual increase. Mark as estimate or update with accurate figures.</p>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="keyboard-hints">
+            <span>[J/K] Move through issues</span>
+            <span>[Enter] Jump to paragraph in DRAFT</span>
+            <span>[R] Run again</span>
+        </footer>
+    </div>
+
+    <!-- 6. Evidence Drawer (Global Overlay) -->
+    <div id="evidence-drawer" class="overlay" style="display: none;">
+        <div class="drawer-content">
+            <header class="drawer-header">
+                <h3>Evidence for selection: "Unemployment doubled within a month."</h3>
+                <button class="btn-close" onclick="closeDrawer()">×</button>
+            </header>
+
+            <div class="linked-bundles">
+                <h4>Linked Bundles:</h4>
+                <ul>
+                    <li><strong>#1 Plant Closure 2019</strong> (Type: Event, Quantity | State: Sourced)</li>
+                    <li><strong>#4 Aftermath</strong> (Type: Quantity | State: Sourced)</li>
+                </ul>
+            </div>
+
+            <div class="drawer-sources">
+                <h4>Sources (Bundle #4 – Aftermath):</h4>
+                <div class="source-card">
+                    <span class="source-tag gov">Gov Stats</span>
+                    <strong>Labour report 2020-Q2</strong>
+                    <blockquote>"Unemployment rose from 7.4% to 11.1% over three months after closure."</blockquote>
+                </div>
+                <div class="source-card">
+                    <span class="source-tag interview">Interview</span>
+                    <strong>Mayor, 2020-05-12</strong>
+                    <blockquote>"People felt like jobs vanished overnight, but the numbers climbed over a season, not a single month."</blockquote>
+                </div>
+            </div>
+
+            <div class="llm-note">
+                <h4>LLM Note:</h4>
+                <p><strong>Proposed reliability:</strong></p>
+                <ul>
+                    <li>Quantity claim is overstated; evidence supports ~50% increase over 3 months, not doubling in 1 month.</li>
+                </ul>
+            </div>
+
+            <div class="drawer-actions">
+                <button class="btn">Soft fix sentence</button>
+                <button class="btn">Mark as Interpretive</button>
+                <button class="btn">Open bundle</button>
+                <button class="btn" onclick="closeDrawer()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. Settings / Voice Page -->
+    <div id="settings" class="view">
+        <header class="settings-header">
+            <h2>Settings</h2>
+            <button class="btn" onclick="showView('dashboard')">Close</button>
+        </header>
+
+        <div class="settings-tabs">
+            <button class="settings-tab">General</button>
+            <button class="settings-tab">Models</button>
+            <button class="settings-tab active">Voice & Style</button>
+        </div>
+
+        <div class="settings-content">
+            <section class="settings-section">
+                <h3>1. Upload sample text (your voice)</h3>
+                <div class="file-upload">
+                    <button class="btn">Choose file</button>
+                    <span class="hint">(e.g., 1–2 pages of your existing work)</span>
+                </div>
+                <div class="detected-traits">
+                    <h4>Detected traits:</h4>
+                    <ul>
+                        <li><strong>Sentence length:</strong> medium</li>
+                        <li><strong>Registers:</strong> concrete, sensory, low jargon</li>
+                        <li><strong>Tenses:</strong> mostly past, some present historic</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h3>2. Guidance to LLMs</h3>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" checked> Bias rewrites toward my uploaded voice</label>
+                    <label><input type="checkbox"> Never suggest radical stylistic shifts</label>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h3>3. Safety / Constraints</h3>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" checked> Only commentary in TEST (no auto edits)</label>
+                    <label><input type="checkbox"> Allow HARD rewrites in DRAFT</label>
+                </div>
+            </section>
+
+            <div class="settings-actions">
+                <button class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo button for Evidence Drawer -->
+    <button class="demo-drawer-btn" onclick="toggleDrawer()">Toggle Evidence Drawer Demo</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
