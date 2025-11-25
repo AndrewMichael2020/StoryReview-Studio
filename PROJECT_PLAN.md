@@ -64,17 +64,48 @@ Implement the core data models as defined in Part 6.1 of the strategy document.
 
 **Reference Code (TypeScript)**:
 ```typescript
-// Types for claims
+/**
+ * ClaimType represents the category of truth a claim asserts.
+ * Used to determine appropriate verification methods and display groupings.
+ * - event: Did this happen? (verify via sources, records, witnesses)
+ * - identity: Does this person/place/org exist? (verify via public records)
+ * - sequence: Did A happen before/after B? (verify via timeline cross-reference)
+ * - quantity: Is this number accurate? (verify via data sources)
+ * - attribution: Did X actually say this? (verify via recording, transcript)
+ * - characterization: Is this description fair/accurate? (verify via multiple sources)
+ */
 type ClaimType = 'event' | 'identity' | 'sequence' | 'quantity' | 'attribution' | 'characterization';
+
+/**
+ * ClaimState represents the current verification status of a claim.
+ * States are fluid and can change as the author works and adds evidence.
+ * - verified: 2+ independent sources OR primary document
+ * - sourced: 1 source (named or documented)
+ * - claimed: Author asserts based on memory/interview, no documentation
+ * - unknown: Claim made in draft but not yet linked to evidence
+ * - contested: Sources disagree – conflict documented
+ * - unfounded: Checked and no supporting evidence found
+ */
 type ClaimState = 'verified' | 'sourced' | 'claimed' | 'unknown' | 'contested' | 'unfounded';
 
+/**
+ * Claim represents a single factual assertion in the story.
+ * Claims are grouped into EvidenceBundles for manageable organization.
+ */
 interface Claim {
+  /** Unique identifier for the claim */
   id: string;
+  /** The text of the factual assertion */
   text: string;
+  /** The category of truth this claim asserts */
   type: ClaimType;
+  /** Current verification status */
   state: ClaimState;
+  /** Links to sources supporting this claim */
   sources: SourceLink[];
+  /** Optional notes from the author about verification or context */
   authorNotes?: string;
+  /** IDs of scenes where this claim is used */
   usedInScenes: string[];
 }
 ```
@@ -106,7 +137,13 @@ Create the foundational UI components and design tokens.
 **Acceptance Criteria**:
 - [ ] Set up component library (shadcn/ui or similar)
 - [ ] Define color palette (including reliability state indicators)
-- [ ] Create reliability state icons: ✓ (verified), ◐ (sourced), ○ (claimed), ? (unknown), ⚠ (contested), ∅ (unfounded)
+- [ ] Create reliability state icons with accessible alternatives:
+  - ✓ (verified) - aria-label: "Verified: 2+ independent sources"
+  - ◐ (sourced) - aria-label: "Sourced: 1 documented source"
+  - ○ (claimed) - aria-label: "Claimed: Author assertion, no documentation"
+  - ? (unknown) - aria-label: "Unknown: Not yet linked to evidence"
+  - ⚠ (contested) - aria-label: "Contested: Sources disagree"
+  - ∅ (unfounded) - aria-label: "Unfounded: No supporting evidence found"
 - [ ] Implement 3 UI loudness levels (Quiet, Attentive, Alert)
 - [ ] Create reusable Panel components for the layout
 
@@ -191,7 +228,7 @@ Allow linking text to evidence bundles.
 - [ ] Create new claim from selected text
 - [ ] Show evidence trail on paragraph hover
 - [ ] One-click evidence linking
-- [ ] Keyboard shortcut: Cmd/Ctrl + L
+- [ ] Keyboard shortcut: Cmd/Ctrl + Shift + L (avoids browser address bar conflict)
 
 ---
 
@@ -553,12 +590,12 @@ Implement author-triggered assistance.
 **Description**:
 Implement keyboard-first workflow.
 
-**Acceptance Criteria**:
-- [ ] Cmd/Ctrl + E: Open evidence trail for current paragraph
-- [ ] Cmd/Ctrl + L: Link selected text to evidence
-- [ ] Cmd/Ctrl + H: Add hedging to selected claim
-- [ ] Cmd/Ctrl + T: Run quick reliability check on current scene
-- [ ] Cmd/Ctrl + R: Open assistance menu
+**Acceptance Criteria** (keyboard shortcuts avoid common browser conflicts):
+- [ ] Cmd/Ctrl + Shift + E: Open evidence trail for current paragraph
+- [ ] Cmd/Ctrl + Shift + L: Link selected text to evidence
+- [ ] Cmd/Ctrl + Shift + H: Add hedging to selected claim
+- [ ] Cmd/Ctrl + Shift + K: Run quick reliability check on current scene
+- [ ] Cmd/Ctrl + Shift + A: Open assistance menu
 
 ---
 
