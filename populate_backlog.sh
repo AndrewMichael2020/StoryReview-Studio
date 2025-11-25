@@ -12,6 +12,8 @@
 # 4. Run from the repository root: ./populate_backlog.sh
 #
 # Note: This script will create labels if they don't exist
+#
+# Based on: StoryReview_Studio_Strategy_Version4.md
 
 set -e
 
@@ -35,20 +37,16 @@ gh label create "seed-mode" --color "0E8A16" --description "SEED mode features" 
 gh label create "shape-mode" --color "1D76DB" --description "SHAPE mode features" --repo $REPO 2>/dev/null || echo "  Label 'shape-mode' already exists"
 gh label create "draft-mode" --color "5319E7" --description "DRAFT mode features" --repo $REPO 2>/dev/null || echo "  Label 'draft-mode' already exists"
 gh label create "test-mode" --color "D93F0B" --description "TEST mode features" --repo $REPO 2>/dev/null || echo "  Label 'test-mode' already exists"
+gh label create "craft" --color "D4C5F9" --description "Craft layer features" --repo $REPO 2>/dev/null || echo "  Label 'craft' already exists"
 gh label create "ai" --color "FBCA04" --description "AI/LLM integration" --repo $REPO 2>/dev/null || echo "  Label 'ai' already exists"
 gh label create "ui" --color "C2E0C6" --description "User interface" --repo $REPO 2>/dev/null || echo "  Label 'ui' already exists"
 gh label create "ux" --color "BFD4F2" --description "User experience" --repo $REPO 2>/dev/null || echo "  Label 'ux' already exists"
 gh label create "evidence" --color "F9D0C4" --description "Evidence system" --repo $REPO 2>/dev/null || echo "  Label 'evidence' already exists"
-gh label create "voice" --color "D4C5F9" --description "Voice preservation" --repo $REPO 2>/dev/null || echo "  Label 'voice' already exists"
-gh label create "self-observation" --color "FEF2C0" --description "Session logging/analytics" --repo $REPO 2>/dev/null || echo "  Label 'self-observation' already exists"
-gh label create "analytics" --color "FEF2C0" --description "Analytics and metrics" --repo $REPO 2>/dev/null || echo "  Label 'analytics' already exists"
-gh label create "editor" --color "C5DEF5" --description "Editor functionality" --repo $REPO 2>/dev/null || echo "  Label 'editor' already exists"
-gh label create "navigation" --color "BFD4F2" --description "Navigation features" --repo $REPO 2>/dev/null || echo "  Label 'navigation' already exists"
 gh label create "sources" --color "F9D0C4" --description "Source management" --repo $REPO 2>/dev/null || echo "  Label 'sources' already exists"
 gh label create "structure" --color "C2E0C6" --description "Story structure" --repo $REPO 2>/dev/null || echo "  Label 'structure' already exists"
-gh label create "validation" --color "D93F0B" --description "Validation checks" --repo $REPO 2>/dev/null || echo "  Label 'validation' already exists"
+gh label create "navigation" --color "BFD4F2" --description "Navigation features" --repo $REPO 2>/dev/null || echo "  Label 'navigation' already exists"
+gh label create "editor" --color "C5DEF5" --description "Editor functionality" --repo $REPO 2>/dev/null || echo "  Label 'editor' already exists"
 gh label create "keyboard" --color "BFD4F2" --description "Keyboard shortcuts" --repo $REPO 2>/dev/null || echo "  Label 'keyboard' already exists"
-gh label create "iteration" --color "C5DEF5" --description "Iterative improvements" --repo $REPO 2>/dev/null || echo "  Label 'iteration' already exists"
 gh label create "storage" --color "0E8A16" --description "Data storage" --repo $REPO 2>/dev/null || echo "  Label 'storage' already exists"
 gh label create "testing" --color "D93F0B" --description "Testing" --repo $REPO 2>/dev/null || echo "  Label 'testing' already exists"
 gh label create "documentation" --color "0075CA" --description "Documentation" --repo $REPO 2>/dev/null || echo "  Label 'documentation' already exists"
@@ -87,9 +85,9 @@ echo "📋 Creating issues..."
 echo ""
 
 # ============================================
-# M0: Project Setup
+# Phase 1: Foundation (Weeks 1-2)
 # ============================================
-echo "=== M0: Project Setup ==="
+echo "=== Phase 1: Foundation ==="
 
 create_issue "Initialize Project Repository" \
 "## Description
@@ -110,22 +108,27 @@ High
 Task
 
 ## Milestone
-M0: Project Setup" \
+Phase 1: Foundation" \
 "setup,infrastructure"
 
 create_issue "Define Data Models" \
 "## Description
-Implement the core data models as defined in Part 6.1 of the strategy document.
+Implement the core data models as defined in Part 6 of the strategy document.
 
 ## Acceptance Criteria
-- [ ] Story model (id, title, intent, voice_sample, admired_pieces)
-- [ ] EvidenceBundle model (id, name, claims, sources)
-- [ ] Claim model with types (event, identity, sequence, quantity, attribution, characterization)
-- [ ] Claim states (verified, sourced, claimed, unknown, contested, unfounded)
-- [ ] Scene model (id, title, description, target_word_count, bundles, order)
-- [ ] Source model and SourceLink
+- [ ] Story model (id, title, premise, targetLength, form, pov, verificationQuestions, status)
+- [ ] Bundle model (id, storyId, name, type, state, sources, extracts, claims)
+- [ ] Bundle types: event, identity, quantity, attribution, sequence
+- [ ] Reliability states: verified, sourced, unlinked, contested
+- [ ] Source model (id, bundleId, type, title, date, url, notes)
+- [ ] Claim model (id, bundleId, text, sourceIds)
+- [ ] Beat model (id, storyId, name, order, description)
+- [ ] Scene model (id, storyId, title, beatId, mode, sensoryAnchor, targetWordCount, bundleIds, order)
+- [ ] Person model with arc tracking
+- [ ] Theme model
+- [ ] Manuscript and ManuscriptScene models
+- [ ] EvidenceLink model with isInterpretation flag
 - [ ] ReviewReport model
-- [ ] SessionLog model for self-observation
 
 ## Priority
 High
@@ -134,7 +137,7 @@ High
 Task
 
 ## Milestone
-M0: Project Setup" \
+Phase 1: Foundation" \
 "backend,data-model"
 
 create_issue "Set Up State Management" \
@@ -143,7 +146,7 @@ Implement state management for the application.
 
 ## Acceptance Criteria
 - [ ] Choose state management solution (Zustand/Redux Toolkit recommended)
-- [ ] Create stores for Story, Bundles, Scenes, and Sessions
+- [ ] Create stores for Story, Bundles, Scenes, Beats, Persons, and Themes
 - [ ] Implement persistence layer (localStorage initially, IndexedDB later)
 - [ ] Add undo/redo capability for editing actions
 
@@ -154,7 +157,7 @@ High
 Task
 
 ## Milestone
-M0: Project Setup" \
+Phase 1: Foundation" \
 "frontend,state"
 
 create_issue "Design System & UI Components" \
@@ -175,25 +178,88 @@ Medium
 Task
 
 ## Milestone
-M0: Project Setup" \
+Phase 1: Foundation" \
 "frontend,design"
 
+create_issue "Dashboard with Story Management" \
+"## Description
+Build the main dashboard for managing stories.
+
+## Acceptance Criteria
+- [ ] Story list view
+- [ ] Create new story
+- [ ] Open existing story
+- [ ] Delete story
+- [ ] Story status indicators
+
+## Priority
+High
+
+## Type
+Feature
+
+## Milestone
+Phase 1: Foundation" \
+"frontend,ui"
+
+create_issue "SEED Mode Intent Form" \
+"## Description
+Build the SEED mode interface for capturing story intent.
+
+## Acceptance Criteria
+- [ ] Title field (required)
+- [ ] Premise field (1-3 sentences, required)
+- [ ] Target length selector (optional - advisory only)
+- [ ] Form selector (Reported / Personal essay / Hybrid / Other)
+- [ ] POV selector (First / Third limited / Third omniscient / Braided)
+- [ ] Verification questions list (what must be verified)
+- [ ] Output: Story Intent Card that guides subsequent modes
+
+## Priority
+High
+
+## Type
+Feature
+
+## Milestone
+Phase 1: Foundation" \
+"seed-mode,ui"
+
+create_issue "Mode Navigation" \
+"## Description
+Implement seamless mode switching.
+
+## Acceptance Criteria
+- [ ] Clear mode indicator: SEED → SHAPE → DRAFT → TEST
+- [ ] Preserve state when switching modes
+- [ ] Handle incomplete data gracefully (system degrades gracefully)
+
+## Priority
+High
+
+## Type
+Feature
+
+## Milestone
+Phase 1: Foundation" \
+"frontend,navigation"
+
 # ============================================
-# M1: Core Writing Loop
+# Phase 2: Evidence Layer (Weeks 3-4)
 # ============================================
 echo ""
-echo "=== M1: Core Writing Loop ==="
+echo "=== Phase 2: Evidence Layer ==="
 
-create_issue "Manuscript Editor Foundation" \
+create_issue "Bundle CRUD" \
 "## Description
-Build the core manuscript editor for writing.
+Implement evidence bundle management.
 
 ## Acceptance Criteria
-- [ ] Rich text editor with basic formatting (bold, italic, headers)
-- [ ] Scene-based document structure
-- [ ] Auto-save functionality
-- [ ] Clean writing surface (no inline underlines by default)
-- [ ] Word count display per scene and total
+- [ ] Create evidence bundles manually
+- [ ] Assign bundle type (EVT, ID, QTY, ATTR, SEQ)
+- [ ] Track reliability state (verified, sourced, unlinked, contested)
+- [ ] Edit and delete bundles
+- [ ] Add key extracts to bundles
 
 ## Priority
 High
@@ -202,19 +268,20 @@ High
 Feature
 
 ## Milestone
-M1: Core Writing Loop" \
-"draft-mode,editor"
+Phase 2: Evidence Layer" \
+"shape-mode,evidence"
 
-create_issue "Scene Structure Panel" \
+create_issue "Source Management" \
 "## Description
-Implement the left panel showing scene structure.
+Implement source import and management.
 
 ## Acceptance Criteria
-- [ ] Scene list with drag-and-drop reordering
-- [ ] Reliability indicators per scene (● = verified, ○ = unverified)
-- [ ] Word count progress per scene
-- [ ] Quick navigation between scenes
-- [ ] Add/delete/rename scene functionality
+- [ ] Add sources to bundles
+- [ ] Source types: web, document, interview, personal, other
+- [ ] Store source metadata (title, date, url, notes)
+- [ ] Link sources to claims
+- [ ] Paste URL and extract content
+- [ ] Paste notes directly
 
 ## Priority
 High
@@ -223,19 +290,18 @@ High
 Feature
 
 ## Milestone
-M1: Core Writing Loop" \
-"draft-mode,navigation"
+Phase 2: Evidence Layer" \
+"shape-mode,sources"
 
-create_issue "Basic Evidence Bundle UI" \
+create_issue "Claims Management" \
 "## Description
-Create manual evidence bundle management for DRAFT mode.
+Implement claim tracking within bundles.
 
 ## Acceptance Criteria
-- [ ] Create/edit/delete evidence bundles
-- [ ] Add claims manually to bundles
-- [ ] Set claim type and state
-- [ ] Add author notes to claims
-- [ ] Bundle summary showing worst reliability state
+- [ ] Add claims to bundles
+- [ ] Link claims to sources
+- [ ] Display claims with source attribution
+- [ ] Bundle summary showing reliability state
 
 ## Priority
 High
@@ -244,18 +310,66 @@ High
 Feature
 
 ## Milestone
-M1: Core Writing Loop" \
-"draft-mode,evidence"
+Phase 2: Evidence Layer" \
+"shape-mode,evidence"
 
-create_issue "Claim Detection in Draft" \
+create_issue "Scene Structure" \
 "## Description
-Implement background claim detection while writing.
+Implement scene creation and management.
 
 ## Acceptance Criteria
-- [ ] Detect potential claims in text (events, quantities, attributions)
-- [ ] Highlight unlinked claims on hover (not by default)
-- [ ] Non-blocking, runs in background
-- [ ] Flag potential claims for review without interrupting flow
+- [ ] Create scenes with titles
+- [ ] Optional word count targets (advisory only)
+- [ ] Scene mode (showing / telling / mixed)
+- [ ] Sensory anchor field
+- [ ] Reorder scenes with drag-and-drop
+- [ ] Link bundles to scenes
+
+## Priority
+High
+
+## Type
+Feature
+
+## Milestone
+Phase 2: Evidence Layer" \
+"shape-mode,structure"
+
+create_issue "SHAPE Mode Three-Panel Layout" \
+"## Description
+Build the SHAPE mode interface.
+
+## Acceptance Criteria
+- [ ] Left Panel: Evidence Bundles list
+- [ ] Center Panel: Structure Board (scenes + beats)
+- [ ] Right Panel: Bundle/Scene detail view
+- [ ] Drag-and-drop between panels
+
+## Priority
+High
+
+## Type
+Feature
+
+## Milestone
+Phase 2: Evidence Layer" \
+"shape-mode,ui"
+
+# ============================================
+# Phase 3: Structure Layer (Weeks 5-6)
+# ============================================
+echo ""
+echo "=== Phase 3: Structure Layer ==="
+
+create_issue "Beat Definitions" \
+"## Description
+Implement beat management for narrative structure.
+
+## Acceptance Criteria
+- [ ] Create custom beats (or use defaults from frameworks)
+- [ ] Beat order management
+- [ ] Beat descriptions
+- [ ] Default beat templates (Freytag, Story Circle)
 
 ## Priority
 Medium
@@ -264,19 +378,126 @@ Medium
 Feature
 
 ## Milestone
-M1: Core Writing Loop" \
-"draft-mode,ai"
+Phase 3: Structure Layer" \
+"shape-mode,structure"
 
-create_issue "Evidence Linking UI" \
+create_issue "Scene-to-Beat Assignment" \
 "## Description
-Allow linking text to evidence bundles.
+Allow assigning scenes to beats (many-to-one relationship).
+
+## Acceptance Criteria
+- [ ] Assign multiple scenes to a single beat
+- [ ] Leave scenes unassigned (optional)
+- [ ] Beats panel overlay showing scene-beat mapping
+- [ ] Identify structural gaps or imbalances
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 3: Structure Layer" \
+"shape-mode,structure"
+
+create_issue "Structure Board Visualization" \
+"## Description
+Visualize story structure with beats and scenes.
+
+## Acceptance Criteria
+- [ ] Visual representation of beats
+- [ ] Scenes grouped under their assigned beats
+- [ ] Unassigned scenes section
+- [ ] Scene word count and evidence indicators
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 3: Structure Layer" \
+"shape-mode,ui"
+
+# ============================================
+# Phase 4: Draft Editor (Weeks 7-8)
+# ============================================
+echo ""
+echo "=== Phase 4: Draft Editor ==="
+
+create_issue "Rich Text Editor" \
+"## Description
+Build the core manuscript editor.
+
+## Acceptance Criteria
+- [ ] Rich text editing with basic formatting (bold, italic, headers)
+- [ ] Scene-based document structure
+- [ ] Auto-save functionality
+- [ ] Word count display per scene and total
+- [ ] Clean writing surface by default
+
+## Priority
+High
+
+## Type
+Feature
+
+## Milestone
+Phase 4: Draft Editor" \
+"draft-mode,editor"
+
+create_issue "Scene List Panel" \
+"## Description
+Implement the left panel showing scene list in DRAFT mode.
+
+## Acceptance Criteria
+- [ ] Scene list with word count progress
+- [ ] Completion status indicators (✓ complete, ● in progress, ○ empty)
+- [ ] Beat assignment display
+- [ ] Quick navigation between scenes
+
+## Priority
+High
+
+## Type
+Feature
+
+## Milestone
+Phase 4: Draft Editor" \
+"draft-mode,navigation"
+
+create_issue "Evidence Linking" \
+"## Description
+Allow linking text to evidence claims.
 
 ## Acceptance Criteria
 - [ ] Select text and link to existing claim
 - [ ] Create new claim from selected text
-- [ ] Show evidence trail on paragraph hover
-- [ ] One-click evidence linking
-- [ ] Keyboard shortcut: Cmd/Ctrl + Shift + L
+- [ ] Evidence linking via selection → modal
+- [ ] Mark as interpretation (excluded from reliability tracking)
+- [ ] Keyboard shortcut: Cmd/Ctrl + L
+
+## Priority
+High
+
+## Type
+Feature
+
+## Milestone
+Phase 4: Draft Editor" \
+"draft-mode,evidence"
+
+create_issue "Text Highlighting" \
+"## Description
+Implement color-coded highlighting for evidence grounding.
+
+## Acceptance Criteria
+- [ ] Green: Linked to verified/sourced evidence
+- [ ] Yellow: Weak source
+- [ ] Red/Orange: Looks like a claim but no evidence linked
+- [ ] No highlight: Narrative/interpretation
 
 ## Priority
 Medium
@@ -285,17 +506,17 @@ Medium
 Feature
 
 ## Milestone
-M1: Core Writing Loop" \
-"draft-mode,evidence"
+Phase 4: Draft Editor" \
+"draft-mode,ui"
 
-create_issue "Evidence Trail Panel" \
+create_issue "Evidence & Warnings Panel" \
 "## Description
-Implement the right panel showing evidence for current paragraph.
+Implement the right panel showing evidence for current scene.
 
 ## Acceptance Criteria
-- [ ] Shows reliability state of claims in current paragraph
-- [ ] One-click to link evidence
-- [ ] Option to add hedging language
+- [ ] Evidence used in current scene
+- [ ] Warnings for unlinked claims
+- [ ] Suggestions (link, hedge, reframe as interpretation)
 - [ ] Non-blocking suggestions
 
 ## Priority
@@ -305,57 +526,22 @@ Medium
 Feature
 
 ## Milestone
-M1: Core Writing Loop" \
+Phase 4: Draft Editor" \
 "draft-mode,ui"
 
-create_issue "Session Logging for Self-Observation" \
-"## Description
-Implement automatic session logging as per Part 5 of the strategy document.
-
-## Acceptance Criteria
-- [ ] Log session duration and mode time distribution
-- [ ] Track actions (added source, linked evidence, etc.)
-- [ ] Detect friction markers (repeated actions, long pauses, mode bouncing)
-- [ ] Store session logs in SessionLog model
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M1: Core Writing Loop" \
-"analytics,self-observation"
-
-create_issue "Mode Navigation" \
-"## Description
-Implement seamless mode switching.
-
-## Acceptance Criteria
-- [ ] Clear mode indicator: SEED → SHAPE → DRAFT → TEST
-- [ ] Preserve state when switching modes
-- [ ] Track mode time for self-observation
-- [ ] Handle incomplete data gracefully
-
-## Priority
-High
-
-## Type
-Feature
-
-## Milestone
-M1: Core Writing Loop" \
-"frontend,navigation"
+# ============================================
+# Phase 5: Review System (Weeks 9-10)
+# ============================================
+echo ""
+echo "=== Phase 5: Review System ==="
 
 create_issue "LLM Integration Layer" \
 "## Description
 Set up LLM integration with appropriate model selection.
 
 ## Acceptance Criteria
-- [ ] API integration for small model (4o-mini) - Q&A, claim extraction
-- [ ] API integration for medium model - pattern matching, paragraph assistance
-- [ ] API integration for large model (Opus/Gemini Pro) - reviews, red team
+- [ ] API integration for small model (4o-mini) - claim detection, tighten/hedge
+- [ ] API integration for large model (GPT-4o, Claude) - full review
 - [ ] Cost tracking per story
 - [ ] Error handling and retry logic
 
@@ -366,276 +552,18 @@ High
 Infrastructure
 
 ## Milestone
-M1: Core Writing Loop" \
+Phase 5: Review System" \
 "backend,ai"
-
-# ============================================
-# M2: Evidence Layer
-# ============================================
-echo ""
-echo "=== M2: Evidence Layer ==="
-
-create_issue "SEED Mode UI Layout" \
-"## Description
-Build the SEED mode interface.
-
-## Acceptance Criteria
-- [ ] Left panel: Free text area for story idea (2-3 paragraphs)
-- [ ] Right top: Story Intent Card (working title, target length, tone)
-- [ ] Right middle: Unknowns to Resolve checklist
-- [ ] Right bottom: Research Sources checklist
-- [ ] Bottom left: Assistant Q&A conversation
-
-## Priority
-High
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"seed-mode,ui"
-
-create_issue "Guided Q&A System" \
-"## Description
-Implement the AI-guided Q&A to surface story requirements.
-
-## Acceptance Criteria
-- [ ] Targeted questions to identify what author knows vs assumes
-- [ ] Surface what must be verified for the piece to work
-- [ ] Identify potential sensitivity areas
-- [ ] Use small model (4o-mini) for efficiency
-- [ ] Conversational interface
-
-## Priority
-High
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"seed-mode,ai"
-
-create_issue "Unknowns List Generation" \
-"## Description
-Auto-generate and manage the unknowns checklist.
-
-## Acceptance Criteria
-- [ ] Auto-generate from Q&A conversation
-- [ ] Editable by author
-- [ ] Check-off functionality
-- [ ] Becomes research checklist
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"seed-mode,ai"
-
-create_issue "Story Intent Card" \
-"## Description
-Implement the story metadata capture.
-
-## Acceptance Criteria
-- [ ] Working title field
-- [ ] Target length selector
-- [ ] Tone/style selector
-- [ ] Sensitivity flags (checkboxes)
-- [ ] Persist with story
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"seed-mode,ui"
-
-create_issue "SHAPE Mode UI Layout" \
-"## Description
-Build the SHAPE mode interface with two main areas.
-
-## Acceptance Criteria
-- [ ] Evidence Bundles Panel
-- [ ] Structure Canvas for scene cards
-- [ ] Drag-and-drop between panels
-- [ ] Collapsible voice & style samples section
-
-## Priority
-High
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"shape-mode,ui"
-
-create_issue "Source Ingestion" \
-"## Description
-Implement source import functionality.
-
-## Acceptance Criteria
-- [ ] Paste URL and extract content
-- [ ] Upload PDF and extract text
-- [ ] Paste notes directly
-- [ ] Store source metadata (type, title, date, publication)
-
-## Priority
-High
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"shape-mode,sources"
-
-create_issue "Automatic Claim Extraction" \
-"## Description
-Use AI to extract claims from sources.
-
-## Acceptance Criteria
-- [ ] Extract claims from source text
-- [ ] Categorize claim types automatically
-- [ ] Group claims into suggested bundles
-- [ ] Use small model for efficiency
-- [ ] Allow author editing of extracted claims
-
-## Priority
-High
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"shape-mode,ai"
-
-create_issue "Evidence Bundle Management" \
-"## Description
-Full bundle management capabilities.
-
-## Acceptance Criteria
-- [ ] Create, rename, merge, split bundles
-- [ ] Reliability states shown at bundle level
-- [ ] Worst state bubbles up to bundle indicator
-- [ ] Filter and search bundles
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"shape-mode,evidence"
-
-create_issue "Structure Canvas" \
-"## Description
-Implement freeform scene card organization.
-
-## Acceptance Criteria
-- [ ] Create scene cards with custom names
-- [ ] Drag bundles onto scenes
-- [ ] Reorder scenes with drag-and-drop
-- [ ] Optional word count targets per scene
-- [ ] Scene description field (author's own words)
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"shape-mode,structure"
-
-create_issue "Pattern References" \
-"## Description
-Suggest similar published pieces for reference.
-
-## Acceptance Criteria
-- [ ] Suggest pieces with similar structures
-- [ ] Show how reference pieces were organized
-- [ ] These are references, not constraints
-- [ ] Author can dismiss/save references
-
-## Priority
-Low
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"shape-mode,ai"
-
-create_issue "Health Checks" \
-"## Description
-Flag potential structural issues.
-
-## Acceptance Criteria
-- [ ] Flag unused bundles
-- [ ] Flag scenes with no evidence
-- [ ] Flag unresolved unknowns
-- [ ] Suggestions, not requirements
-- [ ] Dismissable warnings
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"shape-mode,validation"
-
-create_issue "Voice & Style Samples" \
-"## Description
-Collect voice samples for preservation.
-
-## Acceptance Criteria
-- [ ] Input for author's own voice sample (300-500 words)
-- [ ] Add admired pieces with notes
-- [ ] Notes on what to admire (structure, pacing, voice, argument)
-- [ ] Store with story for later use
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M2: Evidence Layer" \
-"shape-mode,voice"
-
-# ============================================
-# M3: Review System
-# ============================================
-echo ""
-echo "=== M3: Review System ==="
 
 create_issue "TEST Mode UI Layout" \
 "## Description
 Build the TEST mode interface.
 
 ## Acceptance Criteria
-- [ ] Test type selector (Full Review, Red Team, Fact Check)
-- [ ] Report display area
+- [ ] Review report display area
 - [ ] Priority fixes list with navigation
-- [ ] Run test button
+- [ ] Run review button
+- [ ] Report history access
 
 ## Priority
 High
@@ -644,19 +572,20 @@ High
 Feature
 
 ## Milestone
-M3: Review System" \
+Phase 5: Review System" \
 "test-mode,ui"
 
-create_issue "Reliability Report Generation" \
+create_issue "Review Generation" \
 "## Description
-Generate comprehensive reliability reports.
+Generate comprehensive reliability and craft reviews.
 
 ## Acceptance Criteria
-- [ ] Type-by-type breakdown of claim states
-- [ ] Counts per category, not scores
-- [ ] Flag specific issues with context
-- [ ] Navigate to flagged paragraphs
-- [ ] Use large model for comprehensive analysis
+- [ ] Factual grounding assessment (status + specific issues)
+- [ ] Reliability counts: verified, sourced, unlinked, contested
+- [ ] Structure & flow observations (not grades)
+- [ ] Voice & framing observations (not grades)
+- [ ] Ethics/harm flags for consideration
+- [ ] No numeric scores
 
 ## Priority
 High
@@ -665,49 +594,7 @@ High
 Feature
 
 ## Milestone
-M3: Review System" \
-"test-mode,ai"
-
-create_issue "Red Team Analysis" \
-"## Description
-Adversarial analysis of the piece.
-
-## Acceptance Criteria
-- [ ] 'If a hostile fact-checker reviewed this piece' analysis
-- [ ] 'If the story's subject responded' analysis
-- [ ] Surface uncorroborated claims
-- [ ] Identify potential disputes
-- [ ] Use large model for adversarial thinking
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M3: Review System" \
-"test-mode,ai"
-
-create_issue "Structural Observations" \
-"## Description
-Non-scored observations about structure.
-
-## Acceptance Criteria
-- [ ] Pacing observations
-- [ ] Setup/payoff analysis
-- [ ] Scene function review
-- [ ] Identify telling vs showing
-- [ ] Flag new information in endings
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M3: Review System" \
+Phase 5: Review System" \
 "test-mode,ai"
 
 create_issue "Priority Fixes List" \
@@ -715,7 +602,7 @@ create_issue "Priority Fixes List" \
 Actionable fix suggestions.
 
 ## Acceptance Criteria
-- [ ] 'If you do only three things' list
+- [ ] Top 3 actionable issues with locations
 - [ ] Click to navigate to relevant paragraph
 - [ ] Track which fixes have been addressed
 - [ ] No automatic edits - author control
@@ -727,8 +614,178 @@ High
 Feature
 
 ## Milestone
-M3: Review System" \
+Phase 5: Review System" \
 "test-mode,ui"
+
+create_issue "Report History" \
+"## Description
+Save and compare previous review reports.
+
+## Acceptance Criteria
+- [ ] Save review reports with timestamps
+- [ ] View previous reports
+- [ ] Compare reports over time
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 5: Review System" \
+"test-mode,storage"
+
+# ============================================
+# Phase 6: Craft Layer (Weeks 11-12)
+# ============================================
+echo ""
+echo "=== Phase 6: Craft Layer ==="
+
+create_issue "People/Character Panel" \
+"## Description
+Implement person/character tracking.
+
+## Acceptance Criteria
+- [ ] Person card minimal view (name, role, first appears)
+- [ ] Person card expanded view (arc, details, speech patterns)
+- [ ] Track appearances across scenes
+- [ ] Source reliability vs character reliability distinction
+- [ ] Link to evidence bundles
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 6: Craft Layer" \
+"craft,ui"
+
+create_issue "Theme Tracking" \
+"## Description
+Implement theme management.
+
+## Acceptance Criteria
+- [ ] Create themes manually (system doesn't auto-detect)
+- [ ] Theme descriptions
+- [ ] Track theme appearances in scenes
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 6: Craft Layer" \
+"craft,ui"
+
+create_issue "Arc Definitions" \
+"## Description
+Track character and narrator arcs.
+
+## Acceptance Criteria
+- [ ] Person arc (starting state, ending state, turning point)
+- [ ] Narrator arc for first-person pieces
+- [ ] Optional - not all pieces have clean arcs
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 6: Craft Layer" \
+"craft,ui"
+
+create_issue "Craft Observations in Review" \
+"## Description
+Include craft observations in TEST mode review.
+
+## Acceptance Criteria
+- [ ] Scene function observations
+- [ ] Pacing observations
+- [ ] Setup/payoff analysis
+- [ ] Telling vs showing identification
+- [ ] Observations, not prescriptions
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 6: Craft Layer" \
+"test-mode,ai"
+
+# ============================================
+# Phase 7: Polish (Weeks 13-14)
+# ============================================
+echo ""
+echo "=== Phase 7: Polish ==="
+
+create_issue "Assistance Actions" \
+"## Description
+Implement author-triggered writing assistance.
+
+## Acceptance Criteria
+- [ ] Link Evidence: Connect selected text to a claim
+- [ ] Tighten: LLM rewrites paragraph more concisely
+- [ ] Add Hedging: LLM adds uncertainty language to weak claims
+- [ ] Mark as Interpretation: Remove from reliability tracking
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 7: Polish" \
+"draft-mode,ai"
+
+create_issue "Keyboard Shortcuts" \
+"## Description
+Implement keyboard-first workflow.
+
+## Acceptance Criteria
+- [ ] Cmd/Ctrl + L: Link selected text to evidence
+- [ ] Cmd/Ctrl + I: Mark selected text as interpretation
+- [ ] Cmd/Ctrl + Enter: Run TEST review
+- [ ] Cmd/Ctrl + 1-4: Switch modes
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 7: Polish" \
+"ux,keyboard"
+
+create_issue "Progressive Disclosure UI" \
+"## Description
+Implement information hierarchy.
+
+## Acceptance Criteria
+- [ ] Surface level: Scene list, word counts, overall status (always visible)
+- [ ] Working level: Bundles, current paragraph's evidence, beat assignments
+- [ ] Deep level: Individual claims, full provenance chain (on explicit request)
+
+## Priority
+Medium
+
+## Type
+Feature
+
+## Milestone
+Phase 7: Polish" \
+"ux,ui"
 
 create_issue "Data Persistence" \
 "## Description
@@ -748,167 +805,39 @@ High
 Infrastructure
 
 ## Milestone
-M3: Review System" \
+Phase 7: Polish" \
 "backend,storage"
 
-# ============================================
-# M4: Polish & Voice
-# ============================================
-echo ""
-echo "=== M4: Polish & Voice ==="
-
-create_issue "Voice Sample Comparison" \
+create_issue "Self-Testing with Real Story" \
 "## Description
-Compare rewrites against author's voice.
+Test the application with a real story.
 
 ## Acceptance Criteria
-- [ ] Compare AI output to voice sample
-- [ ] Detect significant voice drift
-- [ ] Warn: 'This rewrite is more formal/informal than your usual style'
-- [ ] Options: Accept, Reject, 'Rewrite again, closer to my voice'
+- [ ] Write a complete story using the tool
+- [ ] Document friction points
+- [ ] Log bugs found
+- [ ] Create improvement suggestions
 
 ## Priority
 High
 
 ## Type
-Feature
-
-## Milestone
-M4: Polish & Voice" \
-"voice,ai"
-
-create_issue "Assistance Actions in DRAFT" \
-"## Description
-Implement author-triggered assistance.
-
-## Acceptance Criteria
-- [ ] Light Touch: Tighten paragraph, Clarify sentence, Add hedging
-- [ ] Structural: Suggest opening, Propose transition
-- [ ] Rebuild: Rewrite scene, Compress section (shows full diff)
-- [ ] Safeguards: Check against voice sample, Never add claims not in bundles
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M4: Polish & Voice" \
-"draft-mode,ai"
-
-create_issue "Keyboard Shortcuts" \
-"## Description
-Implement keyboard-first workflow.
-
-## Acceptance Criteria
-- [ ] Cmd/Ctrl + Shift + E: Open evidence trail for current paragraph
-- [ ] Cmd/Ctrl + Shift + L: Link selected text to evidence
-- [ ] Cmd/Ctrl + Shift + H: Add hedging to selected claim
-- [ ] Cmd/Ctrl + Shift + K: Run quick reliability check on current scene
-- [ ] Cmd/Ctrl + Shift + A: Open assistance menu
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M4: Polish & Voice" \
-"ux,keyboard"
-
-create_issue "Progressive Disclosure UI" \
-"## Description
-Implement information hierarchy.
-
-## Acceptance Criteria
-- [ ] Surface level: Scene list, word counts, overall reliability (always visible)
-- [ ] Working level: Evidence bundles, current paragraph claims (mode-specific)
-- [ ] Deep level: Individual claims, source documents (on explicit request)
-
-## Priority
-Medium
-
-## Type
-Feature
-
-## Milestone
-M4: Polish & Voice" \
-"ux,ui"
-
-create_issue "Post-Session Reflection" \
-"## Description
-Prompt for reflection after sessions.
-
-## Acceptance Criteria
-- [ ] Prompt after each session
-- [ ] Questions: What felt smooth? Where was friction? What did you want to do?
-- [ ] Store with session log
-
-## Priority
-Low
-
-## Type
-Feature
-
-## Milestone
-M4: Polish & Voice" \
-"self-observation,ui"
-
-create_issue "Weekly Review Dashboard" \
-"## Description
-Aggregate self-observation data.
-
-## Acceptance Criteria
-- [ ] Sessions count and total time
-- [ ] Mode distribution chart
-- [ ] Top friction points
-- [ ] Features never used
-- [ ] Author notes from reflections
-
-## Priority
-Low
-
-## Type
-Feature
-
-## Milestone
-M4: Polish & Voice" \
-"self-observation,analytics"
-
-create_issue "Friction Point Fixes" \
-"## Description
-Address issues identified through self-observation.
-
-## Acceptance Criteria
-- [ ] Review friction markers from session logs
-- [ ] Prioritize based on frequency
-- [ ] Implement fixes
-- [ ] Verify improvement
-
-## Priority
-Medium
-
-## Type
 Task
 
 ## Milestone
-M4: Polish & Voice" \
-"ux,iteration"
+Phase 7: Polish" \
+"testing,documentation"
 
 create_issue "Open Questions Testing Tracker" \
 "## Description
 Track answers to open questions during testing.
 
 ## Questions to Track
-1. Bundle granularity: How many bundles feel manageable? (Hypothesis: 5-8)
-2. Claim detection accuracy: Miss rate and false positive rate
-3. Voice drift: Can author feel when rewrite doesn't match? Is warning helpful?
-4. Mode sequence: Do users follow SEED → SHAPE → DRAFT → TEST or jump?
-5. Red team usefulness: Does it surface unconsidered issues?
-6. Reliability states: Are 6 states too many? Would 4 suffice?
-7. Session length: How long before fatigue? Does UI contribute?
+1. Beat utility: Do authors use beat assignments, or just scenes?
+2. Form distinction: Does marking a piece 'personal' vs 'reported' change behavior usefully?
+3. Length guidance: Is advisory length helpful, or does it create pressure?
+4. Non-linear support: Can the tool accommodate pieces that don't arc conventionally?
+5. Interpretation marking: Do authors use 'mark as interpretation' to reduce noise?
 
 ## Priority
 Low
@@ -917,7 +846,7 @@ Low
 Documentation
 
 ## Milestone
-M4: Polish & Voice" \
+Phase 7: Polish" \
 "testing,documentation"
 
 echo ""
@@ -930,5 +859,5 @@ echo "2. Configure project views (Board, Table, etc.)"
 echo "3. Set up milestone columns if not auto-created"
 echo "4. Prioritize issues in the backlog"
 echo ""
-echo "Total issues created: 39"
+echo "Total issues created: 35"
 echo "============================================"
